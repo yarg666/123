@@ -1,10 +1,11 @@
 
 # script to do
-
-# screenShot flipbook : y.screenShot bloque
+#y.cacheBgeo
+#ajouter un bouton render et version linker dans le sop context // tricky
 #y.render set un node mantra 
 # merge la geo selection dans un nouveau node qui sera linker au node mantra
 # sauvegarde toutes les previz du render view: y.previzSave // tricky
+#y.materialPreviz
 # set up de shading avec shading ball et environment : y.shadingBall y.123
 
 
@@ -139,10 +140,10 @@ def rotTool():
     for node in nodeSelect:
         wrangleSnippet=node.createOutputNode("attribwrangle","rotTool")
         wrangleSnippet.setColor(pink)
-        wrangleSnippet.setParms({"snippet":"""
-
-matrix myTransform= maketransform(0,0,chv("t"),chv("r"),chv("s"),chv("p")); // translate rotate scale pivot
-@orient = quaternion(matrix3(myTransform)); 
+        wrangleSnippet.setParms({"snippet":"""float x = rand(@ptnum);
+float y = rand(@ptnum+311);
+float z = rand(@ptnum-801);
+@orient = sample_orientation_uniform(set(x,y,z));
 
 """}) 
         print("--- Don't forget create channels parameter in the wrangle node ---")
@@ -203,14 +204,14 @@ vector centroid = (min+max)/2;;
 
 
 
-def cacheBgeo ():
+def bgeo ():
 
     """ cree un rop output dans /out et le recharge dans le context d'origine
     cela permet d'enchainer les depandences dans /out et de les relires automatiquement
     dans dans le contexte d'origine
     """
 
-    help(cacheBgeo)
+    help(bgeo)
 
     import hou
     nodeSelect = hou.selectedNodes()
@@ -232,6 +233,7 @@ def cacheBgeo ():
         myFile = outNull.createOutputNode("file",getName.upper()+"_CACHE")
         myFile.setColor(pink)
         myFile.setParms({'file': '$HIP/cache/rop_sfx/bgeo.sc/$OS/v`padzero(3,chs("/out/$OS/version"))`/$OS.$F5.bgeo.sc'})
+
         myWriteGeo= out.createNode("geometry",getName.upper()+"_CACHE")
         myWriteGeo.setParms({"soppath":"/obj/"+parentString+"/"+getName.upper()})
         myWriteGeo.setParms({"sopoutput":"$HIP/cache/rop_sfx/bgeo.sc/$OS/v`padzero(3, ch('version'))`/$OS.$F5.bgeo.sc"})
@@ -245,14 +247,18 @@ def cacheBgeo ():
         myWriteGeo.setParmTemplateGroup(parm_group)
 
 
-def cacheVdb ():
+
+
+
+
+def vdb ():
 
     """ cree un rop output dans /out et le recharge dans le context d'origine
     cela permet d'enchainer les depandences dans /out et de les relires automatiquement
     dans dans le contexte d'origine
     """
 
-    help(cacheVdb)
+    help(vdb)
 
     import hou
     nodeSelect = hou.selectedNodes()
@@ -286,14 +292,14 @@ def cacheVdb ():
         parm_group.append(parm_folder)
         myWriteGeo.setParmTemplateGroup(parm_group)
 
-def cacheAbc ():
+def abc ():
 
     """ cree un rop output dans /out et le recharge dans le context d'origine
     cela permet d'enchainer les depandences dans /out et de les relires automatiquement
     dans dans le contexte d'origine
     """
 
-    help(cacheAbc)
+    help(abc)
 
     import hou
     nodeSelect = hou.selectedNodes()
