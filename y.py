@@ -821,6 +821,26 @@ def screenShot():
         image.setRelativeToPath(node.path())
         editor.setBackgroundImages([image])
 
+def materialPreviz()
+	import hou
+	obj=hou.node("/obj")
+
+	cam = obj.createNode("cam","shaderBallCam")
+   	cam.setParms({"resx":350,"resy":350})
+   	cam.setParms({"tx":2,"ty":0.5,"tz":0})
+
+   	shaderBall = obj.createNode ("geo","shaderBall")
+    shaderBall.move([-2, 0])
+    file1= hou.node("/obj/shaderBallCam/file1")
+    file1.destroy()
+    shaderBallGeo=geo1.createNode("testgeometry_shaderball","shaderball")
+
+	shaderBallSol = obj.createNode ("geo","shaderBallSol")
+    shaderBallSol.move([-2,-2])
+    file2= hou.node("/obj/shaderBallSol/file1")
+    file2.destroy()
+    #objetSol
+    
 
 
 
