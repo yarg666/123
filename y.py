@@ -821,6 +821,7 @@ def screenShot():
         image.setRelativeToPath(node.path())
         editor.setBackgroundImages([image])
 
+"""
 def materialPreviz()
 	import hou
 	obj=hou.node("/obj")
@@ -840,6 +841,8 @@ def materialPreviz()
     file2= hou.node("/obj/shaderBallSol/file1")
     file2.destroy()
     #objetSol
+
+"""
     
 
 
