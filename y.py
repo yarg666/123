@@ -752,6 +752,25 @@ def explorer():
     else:
         subprocess.Popen(["xdg-open", path])
 
+def explorerPublish():
+    """open explorer at $HIP path"""
+    help(explorerPublish)
+    
+    import hou
+    import os
+    import platform
+    import subprocess
+
+    path = hou.expandString("$HIP")+'/../../publish/images/'+hou.expandString("$HIPNAME")
+
+    print(path)
+    if platform.system() == "Windows":
+        os.startfile(path)
+    elif platform.system() == "Darwin":
+        subprocess.Popen(["open", path])
+    else:
+        subprocess.Popen(["xdg-open", path])
+
 def fileMaker():
     """Create some basic folder at root $HIP"""
     import hou
