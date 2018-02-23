@@ -864,9 +864,30 @@ def materialPreviz()
 """
     
 
+def lancomeUpdate():
+    import hou
 
+    # destroy the old lenV4 node
+    killLenv4= hou.node("/obj/export/lenV4")
 
-        
+    if hou.node('/obj/export/').glob('lenV4'):
+        killLenv4.destroy()
+
+    #create the new init rotate for particule
+    source = hou.node("/obj/source/color5")
+
+    if not hou.node('//obj/source').glob('initRotate*'):
+
+        initRotate = source.createOutputNode("attribwrangle","initRotate")
+        initRotate.setParms({"snippet":"""
+float x = rand(@ptnum);
+float y = rand(@ptnum+311);
+float z = rand(@ptnum-801);
+@orient = sample_orientation_uniform(set(x,y,z));
+"""})
+        pointSource=hou.node("/obj/source/pointSource") 
+        pointSource.setInput(0,initRotate)
+
 
 
 
