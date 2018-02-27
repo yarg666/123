@@ -7,6 +7,7 @@
 
 
 from PySide2 import QtWidgets
+
 import os
 import hou
 print "Hello from fixSceneManager"
@@ -46,6 +47,11 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         #les widgets
         self.label = QtWidgets.QLabel(self.sequencesRoots)
         self.listWidget = QtWidgets.QListWidget()
+
+        # refresh widget
+        self.refreshBouton = QtWidgets.QPushButton('refresh')
+
+
         
         self.createInterface()
         #layout
@@ -58,19 +64,29 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         mainLayout.addWidget(self.shotNameLine)
         mainLayout.addWidget(self.startNameLine)
         mainLayout.addWidget(self.endNameLine)
+        mainLayout.addWidget(self.refreshBouton)
         mainLayout.addWidget(self.listWidget)
 
         self.setLayout(mainLayout)
 
+    def setupConnections(self):
+        self.refreshBouton.clicked.connect(self.refreshPannel)
+
+    def refreshPannel(self):
+
+        print ("refresh")
+
     def openScene(self, hipName):
 
         hipFile=hipName.data()
-         
         #open hipFile
         hou.hipFile.load(hipFile)
-        reload(fixSceneManager)
-        
+        self.shotNameLine.update()
+        print hipFile
+
     def createInterface(self):
+
+        tempList = []
 
         #iteration dans les dossiers 
         for seq in os.walk(self.sequencesRoots).next()[1]:        
@@ -87,11 +103,15 @@ class fixSceneManagerClass(QtWidgets.QWidget):
                             hipPath = shotPath+self.step+"/work/houdini/"+file
                             #print hipPath+" hipPath"
                             #print file
-                            self.listWidget.addItem(hipPath)
+                            tempList.append(hipPath)
                             #print self.listWidget
                 except(OSError): 
                     pass
 
+        #sortList by alphabetical order
+        sortList= sorted(tempList)
+        for hipPathSorted in sortList:
+            self.listWidget.addItem(hipPathSorted)
 
 
         print "fixSceneManager scanning is a sucess !"
