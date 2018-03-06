@@ -49,6 +49,7 @@ class yProjectManagerClass(QtWidgets.QWidget):
 					tempList.append(hipPath)
 		#triage de la liste
 		sortList=sorted(tempList)
+		
 		# systeme de filtres par mot
 		selectionFilter=self.filtrer.text()
 		listeFlitre=[]
