@@ -7,7 +7,6 @@
 
 
 from PySide2 import QtWidgets
-
 import os
 import hou
 print "Houdini c'est cool, Copperfield c'est mieu !"
@@ -54,6 +53,8 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         # refresh 
         self.refreshBouton=QtWidgets.QPushButton("reload !")
         self.fixImportBouton=QtWidgets.QPushButton("createFixImportandBuildScene")
+        self.versionUp=QtWidgets.QPushButton("versionUp")
+
         #layout
         mainLayout=QtWidgets.QVBoxLayout()
         #add widget to layout
@@ -67,6 +68,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         mainLayout.addWidget(self.filtrer)
         mainLayout.addWidget(self.refreshBouton)
         mainLayout.addWidget(self.fixImportBouton)
+        mainLayout.addWidget(self.versionUp)
         mainLayout.addWidget(self.listWidget)
         #set layout
         self.setLayout(mainLayout)
@@ -99,6 +101,9 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         hou.hipFile.load(hipFile)
         #reload variables
         self.variablesReload()
+
+    def incrementScene(self):
+        hou.hipFile.saveAndIncrementFileName()
 
     def setupList(self):
         #empty list
@@ -148,23 +153,18 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         #list sorted
         for hipPathSorted in self.listeFlitre:
             self.listWidget.addItem(hipPathSorted)
-
     def buttonConnect(self):
 
         self.refreshBouton.clicked.connect(self.setupList)
         self.refreshBouton.clicked.connect(self.variablesReload)
         self.listWidget.doubleClicked.connect(self.openScene)
         self.fixImportBouton.clicked.connect(self.createFiximport)
+        self.versionUp.clicked.connect(self.incrementScene)
 
 
 #to do
 
-#faire en sorte que le fixSceneManager ne plante pas 
-#si on est hors pipe 
-
-#linker le scene manager avec le fixImpor
-
-#recupperer le bouton version up current scene
+# possibilité ouvrir une scene et tapant e numero
 #recupperer le bouton publish de shotgun
 
 
