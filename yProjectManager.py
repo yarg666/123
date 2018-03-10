@@ -3,7 +3,7 @@
 #reload(yProjectManager)
 
 #def createInterface():
-#    return yProjectManager.createInterface()
+#    return yProjectManager.yProjectManagerClass()
 from PySide2 import QtWidgets
 import os
 import hou
@@ -21,7 +21,6 @@ class yProjectManagerClass(QtWidgets.QWidget):
 		self.filtrer.setPlaceholderText('project filter')
 		self.refreshBouton=QtWidgets.QPushButton("refresh")
 		self.listWidget = QtWidgets.QListWidget()
-		self.createInterface()
 	    #le layout
 		mainLayout=QtWidgets.QVBoxLayout()
 		mainLayout.addWidget(self.roots)
@@ -29,18 +28,22 @@ class yProjectManagerClass(QtWidgets.QWidget):
 		mainLayout.addWidget(self.refreshBouton)
 		mainLayout.addWidget(self.listWidget)
 		self.setLayout(mainLayout)
+		self.newInterface()
+		print"classy" 
 
 	def openScene(self,hipName):
 	    hipFile=hipName.data()
 	    #open hipFile
 	    hou.hipFile.load(hipFile)
+	    print"open"
 
-	def createInterface(self):
+	def newInterface(self):
 
 		self.proj=self.roots.text()
 		self.listWidget.clear()
 		#boucle qui list les hip dans les dossiers
 		tempList=[]
+
 		for dir in os.walk(self.proj).next()[1]:
 			projLevelOne = self.proj+dir
 			for file in os.listdir(projLevelOne):
@@ -49,7 +52,6 @@ class yProjectManagerClass(QtWidgets.QWidget):
 					tempList.append(hipPath)
 		#triage de la liste
 		sortList=sorted(tempList)
-		
 		# systeme de filtres par mot
 		selectionFilter=self.filtrer.text()
 		listeFlitre=[]
@@ -64,5 +66,12 @@ class yProjectManagerClass(QtWidgets.QWidget):
 		for hipPathSorted in listeFlitre:
 			self.listWidget.addItem(hipPathSorted)
 		# set widget connection
+		print "create"
 		self.listWidget.doubleClicked.connect(self.openScene)
-		self.refreshBouton.released.connect(self.createInterface)
+		self.refreshBouton.clicked.connect(self.newInterface)
+		return self.listWidget
+		
+
+
+
+
