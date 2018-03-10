@@ -891,3 +891,4 @@ float z = rand(@ptnum-801);
 
 
 
+#node.parm('button').set('targetbutton') lien vers un bouton dans un digital asset par exemple
