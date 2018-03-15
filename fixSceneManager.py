@@ -16,8 +16,6 @@ class fixSceneManagerClass(QtWidgets.QWidget):
     def __init__(self):
         super(fixSceneManagerClass,self).__init__()
 
-
-
         self.setupUi()
         self.setupList()
         self.buttonConnect()
@@ -43,6 +41,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         self.endNameLine.setText(hou.expandString("$END_FRAME"))
         #setup path
         self.sequencesRoots= self.roots+self.projectName+"/sequences/"
+
         #les widgets
         self.label = QtWidgets.QLabel(self.sequencesRoots)
         #filter list
@@ -51,9 +50,12 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         #list
         self.listWidget = QtWidgets.QListWidget()
         # refresh 
-        self.refreshBouton=QtWidgets.QPushButton("reload !")
+        self.refreshBouton=QtWidgets.QPushButton("filter and reload stg variable !")
         self.fixImportBouton=QtWidgets.QPushButton("createFixImportandBuildScene")
         self.versionUp=QtWidgets.QPushButton("versionUp")
+        self.openAndScript=QtWidgets.QPushButton("openSceneAndApplyScript")
+        self.textScript=QtWidgets.QPlainTextEdit()
+        self.textScript.setPlaceholderText('pasteScriptHere')
 
         #layout
         mainLayout=QtWidgets.QVBoxLayout()
@@ -69,7 +71,9 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         mainLayout.addWidget(self.refreshBouton)
         mainLayout.addWidget(self.fixImportBouton)
         mainLayout.addWidget(self.versionUp)
-        mainLayout.addWidget(self.listWidget)
+        mainLayout.addWidget(self.openAndScript)
+        mainLayout.addWidget(self.textScript,0,0)
+        mainLayout.addWidget(self.listWidget,5,0)
         #set layout
         self.setLayout(mainLayout)
 
@@ -88,19 +92,33 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         # creer un fix import si il n'existe pas encore dans la scene
         for child in children:
             if child.name() == "projectSettings":
-                exist = 1
-                
+                exist = 1           
         if exist ==0 :
             fixImport = obj.createNode("fixImport","projectSettings")
             fixImport.parm('/obj/projectSettings/buildAndUpdateScene').pressButton()
 
 
     def openScene(self,hipName):
-        #open houdini scene
         hipFile=hipName.data()
         hou.hipFile.load(hipFile)
-        #reload variables
         self.variablesReload()
+
+    def hipNameFromList(self,hipName):
+        self.hipFileFromList=hipName.data()
+        print self.hipFileFromList
+
+    def scriptApasser(self):
+        self.scriptbox= self.textScript.toPlainText()
+        
+
+    def openSceneAndApplyScript(self):
+        #hipFile=self.hipFileFromList
+        #hou.hipFile.load(hipFile)
+        #reload variables
+        #self.variablesReload()
+        self.scriptApasser()
+        print"openSceneAndApplyScript"
+
 
     def incrementScene(self):
         hou.hipFile.saveAndIncrementFileName()
@@ -133,12 +151,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
                     except(OSError): 
                         pass
         except:
-            tempList=["ouvrir une scene deja pipee puis appuier sur les fleches en haut a gauche "]
-
-
-
-
-
+            tempList=["ouvrir une scene deja pipe ou en creer une, puis appuier sur les fleches en haut a gauche "]
         #sortList by alphabetical order
         sortList= sorted(tempList)
         # systeme de filtres par mot
@@ -153,25 +166,27 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         #list sorted
         for hipPathSorted in self.listeFlitre:
             self.listWidget.addItem(hipPathSorted)
-    def buttonConnect(self):
 
+    def buttonConnect(self):
         self.refreshBouton.clicked.connect(self.setupList)
         self.refreshBouton.clicked.connect(self.variablesReload)
         self.listWidget.doubleClicked.connect(self.openScene)
+
         self.fixImportBouton.clicked.connect(self.createFiximport)
         self.versionUp.clicked.connect(self.incrementScene)
+
+        self.listWidget.clicked.connect(self.hipNameFromList)
+        self.openAndScript.clicked.connect(self.openSceneAndApplyScript)
 
 
 #to do
 
-# possibilité ouvrir une scene et tapant e numero
 #recupperer le bouton publish de shotgun
 
+#python script: ouvre la scene selectionnee et lui applique un script
+# une texte box et un bouton qui lance le script
+#donc il faut creer un fichier script temp a la racine de script pour le stocker et l'appeler apres
 
-#python script pour
-#appliquer un script python
-#a toutes les scenes 
-#selctionnes dans le
 #list widget
 
 #ajouter la fonction merge 
