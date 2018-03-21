@@ -9,6 +9,7 @@
 from PySide2 import QtWidgets
 import os
 import hou
+import applyScript
 print "Houdini c'est cool, Copperfield c'est mieu !"
 
 class fixSceneManagerClass(QtWidgets.QWidget): 
@@ -105,10 +106,10 @@ class fixSceneManagerClass(QtWidgets.QWidget):
 
     def hipNameFromList(self,hipName):
         self.hipFileFromList=hipName.data()
-        print self.hipFileFromList
+        
 
-    def scriptApasser(self):
-        self.scriptbox= self.textScript.toPlainText()
+
+
         
 
     def openSceneAndApplyScript(self):
@@ -116,8 +117,17 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         #hou.hipFile.load(hipFile)
         #reload variables
         #self.variablesReload()
-        self.scriptApasser()
-        print"openSceneAndApplyScript"
+        #print os.path.realpath(__file__)
+        
+        myScriptToWrite=self.textScript.toPlainText()
+        applyScriptPath=os.getcwd() + "/applyScript.py"
+        print applyScriptPath
+        writeMyScript = open(applyScriptPath, 'w')
+        writeMyScript.write(myScriptToWrite)
+        reload (applyScript)
+        applyScript.temp()
+
+        #print"openSceneAndApplyScript"
 
 
     def incrementScene(self):
@@ -175,8 +185,8 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         self.fixImportBouton.clicked.connect(self.createFiximport)
         self.versionUp.clicked.connect(self.incrementScene)
 
-        self.listWidget.clicked.connect(self.hipNameFromList)
-        self.openAndScript.clicked.connect(self.openSceneAndApplyScript)
+        #self.listWidget.clicked.connect(self.hipNameFromList)
+        #self.openAndScript.clicked.connect(self.openSceneAndApplyScript)
 
 
 #to do
