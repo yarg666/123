@@ -37,9 +37,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         self.projectName=self.projectLine.text() 
         self.stepLine.setText("sfx")
         self.step=self.stepLine.text() 
-        self.shotNameLine.setText(hou.expandString("$SHOT_NAME"))
-        self.startNameLine.setText(hou.expandString("$START_FRAME"))
-        self.endNameLine.setText(hou.expandString("$END_FRAME"))
+
         #setup path
         self.sequencesRoots= self.roots+self.projectName+"/sequences/"
 
@@ -52,7 +50,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         self.listWidget = QtWidgets.QListWidget()
         # refresh 
         self.refreshBouton=QtWidgets.QPushButton("filter and reload stg variable !")
-        self.fixImportBouton=QtWidgets.QPushButton("createFixImportandBuildScene")
+        self.allProjectName=QtWidgets.QPushButton("print filter project name")
         self.versionUp=QtWidgets.QPushButton("versionUp")
         self.openAndScript=QtWidgets.QPushButton("openSceneAndApplyScript")
         self.textScript=QtWidgets.QPlainTextEdit()
@@ -64,13 +62,11 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         mainLayout.addWidget(self.label)
         mainLayout.addWidget(self.projectLine)
         mainLayout.addWidget(self.stepLine)
-        mainLayout.addWidget(self.shotNameLine)
-        mainLayout.addWidget(self.startNameLine)
-        mainLayout.addWidget(self.endNameLine)
+
         #widget util
         mainLayout.addWidget(self.filtrer)
         mainLayout.addWidget(self.refreshBouton)
-        mainLayout.addWidget(self.fixImportBouton)
+        mainLayout.addWidget(self.allProjectName)
         mainLayout.addWidget(self.versionUp)
         mainLayout.addWidget(self.openAndScript)
         mainLayout.addWidget(self.textScript,0,0)
@@ -87,17 +83,6 @@ class fixSceneManagerClass(QtWidgets.QWidget):
 
         print"reload !"
 
-    def createFiximport(self):
-        obj = hou.node("/obj")
-        children = obj.children()
-        exist = 0 
-        # creer un fix import si il n'existe pas encore dans la scene
-        for child in children:
-            if child.name() == "projectSettings":
-                exist = 1           
-        if exist ==0 :
-            fixImport = obj.createNode("fixImport","projectSettings")
-            fixImport.parm('/obj/projectSettings/buildAndUpdateScene').pressButton()
 
 
     def openScene(self,hipName):
@@ -128,6 +113,27 @@ class fixSceneManagerClass(QtWidgets.QWidget):
 
     def incrementScene(self):
         hou.hipFile.saveAndIncrementFileName()
+
+    def printProjectName(self):
+
+        print "projectNames"
+        sortList=[]
+        tempProj = []
+        for proj in os.walk(self.roots).next()[1]:
+
+            tempProj.append(proj)
+
+        sortList= sorted(tempProj)
+        selectionFilter=self.filtrer.text()
+        filtreProj= []
+
+        if len(selectionFilter) == 0:
+            print sortList
+        else :
+            for listElement in sortList:
+                if selectionFilter in listElement:
+                    print listElement
+ 
 
     def setupList(self):
         print self.sequencesRoots
@@ -180,7 +186,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
 
         self.listWidget.doubleClicked.connect(self.openScene)
 
-        self.fixImportBouton.clicked.connect(self.createFiximport)
+        self.allProjectName.clicked.connect(self.printProjectName)
         self.versionUp.clicked.connect(self.incrementScene)
 
         #self.listWidget.clicked.connect(self.hipNameFromList)
