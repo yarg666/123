@@ -105,6 +105,23 @@ class yProjectManagerClass(QtWidgets.QWidget):
 		self.listWidget.clicked.connect(self.hipNameFromList)
 		self.openAndScript.clicked.connect(self.openSceneAndApplyScript)
 
+
+
+#to do
+
+#recupperer le bouton publish de shotgun
+
+#python script: ouvre la scene selectionnee et lui applique un script
+# une texte box et un bouton qui lance le script
+#donc il faut creer un fichier script temp a la racine de script pour le stocker et l'appeler apres
+
+#list widget
+
+#ajouter la fonction merge 
+#from selectListWidgetItem
+
+#faire des onglet pour mettre tout les scripts en une seul interface
+
 		
 
 

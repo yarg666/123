@@ -28,6 +28,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         self.roots = "/prod/project/"
         #variable widget
         self.projectLine=QtWidgets.QLineEdit()
+        self.projectLine.setPlaceholderText("type project name")
         self.stepLine=QtWidgets.QLineEdit()
         self.shotNameLine=QtWidgets.QLineEdit()
         self.startNameLine=QtWidgets.QLineEdit()
@@ -36,16 +37,19 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         self.projectLine.setText("0_PP_TEMPLATE_16_1117")
         self.projectName=self.projectLine.text() 
         self.stepLine.setText("sfx")
-        self.step=self.stepLine.text() 
-
+        self.step=self.stepLine.text() 		
+        #search hip file throug any path
+        self.anyPath=QtWidgets.QLineEdit()
+        self.anyPath.setPlaceholderText('type any path to list hip file')
+        self.boutonListfromAnyPath=QtWidgets.QPushButton("listFromAnyPath")
+        self.anyName=self.anyPath.text()	
         #setup path
         self.sequencesRoots= self.roots+self.projectName+"/sequences/"
-
         #les widgets
         self.label = QtWidgets.QLabel(self.sequencesRoots)
         #filter list
         self.filtrer=QtWidgets.QLineEdit()
-        self.filtrer.setPlaceholderText('project filter')
+        self.filtrer.setPlaceholderText('project filter he oh')
         #list
         self.listWidget = QtWidgets.QListWidget()
         # refresh 
@@ -62,7 +66,8 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         mainLayout.addWidget(self.label)
         mainLayout.addWidget(self.projectLine)
         mainLayout.addWidget(self.stepLine)
-
+        mainLayout.addWidget(self.anyPath)
+        mainLayout.addWidget(self.boutonListfromAnyPath)
         #widget util
         mainLayout.addWidget(self.filtrer)
         mainLayout.addWidget(self.refreshBouton)
@@ -80,6 +85,8 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         self.projectName=self.projectLine.text()
         self.sequencesRoots= self.roots+self.projectName+"/sequences/"
         self.label = QtWidgets.QLabel(self.sequencesRoots)
+        self.anyName=self.anyPath.text()
+
 
         print"reload !"
 
@@ -180,14 +187,55 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         for hipPathSorted in self.listeFlitre:
             self.listWidget.addItem(hipPathSorted)
 
+
+    def setupAnyList(self):
+        print self.anyName
+        #empty list
+        #create and clear all List
+        self.listeFlitre=[]
+        tempList = []
+        del tempList[:]
+        sortList= []
+        del sortList[:]
+        self.listeFlitre=[]
+        del self.listeFlitre[:]
+        self.listWidget.clear()
+        #iteration dans les dossiers 
+
+        for dir in os.walk(self.anyName).next()[1]:
+            projLevelOne = self.anyName+dir
+            for file in os.listdir(projLevelOne):
+                if file.endswith('.hip'):
+                    hipPath = projLevelOne+"/"+file
+                    tempList.append(hipPath)
+
+        #sortList by alphabetical order
+        sortList= sorted(tempList)
+        # systeme de filtres par mot
+        selectionFilter=self.filtrer.text()
+        # test if there is a key word to filter the list with
+        if len(selectionFilter) == 0:
+            self.listeFlitre=sortList
+        else :
+            for listElement in sortList:
+                if selectionFilter in listElement:
+                    self.listeFlitre.append(listElement)
+        #list sorted
+        for hipPathSorted in self.listeFlitre:
+            self.listWidget.addItem(hipPathSorted)   
+
     def buttonConnect(self):
         self.refreshBouton.clicked.connect(self.variablesReload)
         self.refreshBouton.clicked.connect(self.setupList)
+
+        self.boutonListfromAnyPath.clicked.connect(self.variablesReload)
+        self.boutonListfromAnyPath.clicked.connect(self.setupAnyList)
 
         self.listWidget.doubleClicked.connect(self.openScene)
 
         self.allProjectName.clicked.connect(self.printProjectName)
         self.versionUp.clicked.connect(self.incrementScene)
+
 
         #self.listWidget.clicked.connect(self.hipNameFromList)
         #self.openAndScript.clicked.connect(self.openSceneAndApplyScript)
@@ -206,5 +254,6 @@ class fixSceneManagerClass(QtWidgets.QWidget):
 #ajouter la fonction merge 
 #from selectListWidgetItem
 
+#faire des onglet pour mettre tout les scripts en une seul interface
 
 
