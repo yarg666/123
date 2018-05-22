@@ -892,3 +892,109 @@ float z = rand(@ptnum-801);
 
 
 #node.parm('button').set('targetbutton') lien vers un bouton dans un digital asset par exemple
+
+
+
+def wranglePreset():
+    '''
+    a simple wrangle preset for lazy man
+    '''
+    
+    help(wranglePreset)
+
+    import hou
+    nodeSelect = hou.selectedNodes()
+    pink=hou.Color((0.98,0.275,0.275))
+
+    for node in nodeSelect:
+        wrangleSnippet=node.createOutputNode("attribwrangle","wranglePreset")
+        wrangleSnippet.setColor(pink)
+        wrangleSnippet.setParms({"snippet":"""
+
+//if (@Cd.x<chf("seuilColor"))removepoint(0,@ptnum);
+//if (rand(@ptnum+654)<chf("seuil"))removepoint(0,@ptnum);
+//if (volumesample(1,"surface",@P)<0)removepoint(0,@ptnum);
+
+//@pscale*= fit01(rand(@ptnum+654),0.8,1.2);
+
+//int handle = pcopen(0,"P",@P,chf("radius"),chi("numPoint"));
+//@Cd= chramp("ramp",fit(@curvature,0,1000,0,1));
+
+//if (dot(@N,chv("vector"))>ch("select")){
+//@Cd.x=1;
+//}
+
+
+"""})
+
+
+def nullMerge():
+
+    '''
+    create a null and a merge node just after, for lazy lazy man.
+    '''
+    
+    help(nullMerge)
+
+    import hou
+    obj = hou.node("/obj")    
+    nodeSelect = hou.selectedNodes()
+    pink=hou.Color((0.98,0.275,0.275))
+    black=hou.Color((0,0,0))
+
+    for node in nodeSelect:
+        nullName=node.name()
+        myNull=node.createOutputNode("null",nullName.upper())
+        myNull.setPosition(node.position())
+        myNull.move([0, -.75])
+        myNull.setColor(black)
+        parent=myNull.parent()
+        parentName=parent.name()
+        myNullName= node.name()
+        pos = myNull.position()
+
+        print parentName + myNullName
+
+        myMerge=parent.createNode("object_merge",nullName.upper()+"_MERGE")
+        
+        myMerge.setParms({'objpath1':"/obj/"+parentName+"/"+myNullName.upper()})
+        myMerge.setPosition(pos)
+        #myMerge=setParms({'objpath1':'mynullPath'})
+
+
+"""
+    help(vdb)
+
+    import hou
+    nodeSelect = hou.selectedNodes()
+    black=hou.Color((0,0,0))
+    pink=hou.Color((0.98,0.275,0.275))
+    out= hou.node("/out")
+
+    for node in nodeSelect:
+        parent = node.parent()  #hou.node("..")
+        parentString =parent.name()    
+        getName = node.name()
+        connectNode = node.outputs()
+        outNull = node.createOutputNode("null",getName.upper())
+        outNull.setPosition(node.position())
+        outNull.move([0, -.75])
+        outNull.setColor(black)
+
+        #set read node to read myWriteGeo
+        myFile = outNull.createOutputNode("file",getName.upper()+"_CACHE")
+        myFile.setColor(pink)
+        myFile.setParms({'file': '$HIP/cache/rop_sfx/vdb/$OS/v`padzero(3,chs("/out/$OS/version"))`/$OS.$F5.vdb'})
+        myWriteGeo= out.createNode("geometry",getName.upper()+"_CACHE")
+        myWriteGeo.setParms({"soppath":"/obj/"+parentString+"/"+getName.upper()})
+        myWriteGeo.setParms({"sopoutput":"$HIP/cache/rop_sfx/vdb/$OS/v`padzero(3, ch('version'))`/$OS.$F5.vdb"})
+        myWriteGeo.setParms({"trange":"normal"})
+
+        #add create param for versionning
+        parm_group = myWriteGeo.parmTemplateGroup()
+        parm_folder = hou.FolderParmTemplate("folder","version")
+        parm_folder.addParmTemplate(hou.IntParmTemplate("version","Version",1))
+        parm_group.append(parm_folder)
+        myWriteGeo.setParmTemplateGroup(parm_group)
+
+    """
