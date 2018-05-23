@@ -911,19 +911,30 @@ def wranglePreset():
         wrangleSnippet.setColor(pink)
         wrangleSnippet.setParms({"snippet":"""
 
+//delete
 //if (@Cd.x<chf("seuilColor"))removepoint(0,@ptnum);
 //if (rand(@ptnum+654)<chf("seuil"))removepoint(0,@ptnum);
+
+//volumesample
 //if (volumesample(1,"surface",@P)<0)removepoint(0,@ptnum);
 
+//pscale
 //@pscale*= fit01(rand(@ptnum+654),0.8,1.2);
 
+//pcopen pcfilter
 //int handle = pcopen(0,"P",@P,chf("radius"),chi("numPoint"));
+//@Cd = pcfilter(handle,"Cd");
+
+//chramp color
 //@Cd= chramp("ramp",fit(@curvature,0,1000,0,1));
 
+//dot
 //if (dot(@N,chv("vector"))>ch("select")){
 //@Cd.x=1;
-//}
 
+//constraint
+//s@constraint_name= "ConRelGlue" ;
+//s@constraint_type= "all" ;
 
 """})
 
@@ -960,6 +971,66 @@ def nullMerge():
         myMerge.setParms({'objpath1':"/obj/"+parentName+"/"+myNullName.upper()})
         myMerge.setPosition(pos)
         #myMerge=setParms({'objpath1':'mynullPath'})
+
+
+def polygoneFlow ():
+
+    '''
+    select face by normal orientation with color, blur the color and prepare the normal
+    for velocity source
+    '''
+    
+    help(polygoneFlow)
+
+    import hou
+    nodeSelect = hou.selectedNodes()
+    pink=hou.Color((0.98,0.275,0.275))
+
+    for node in nodeSelect:
+        wrangleSnippet=node.createOutputNode("attribwrangle","selectByOrientationRGB")
+        wrangleSnippet.setColor(pink)
+        wrangleSnippet.setParms({"snippet":"""
+//red
+if (dot(@N,{0,0,1})>ch("red")){
+@Cd={1,0,0};
+}
+//green
+else if (dot(@N,{0,1,0})>ch("green")){
+@Cd={0,1,0};
+}
+//green
+else if (dot(@N,{0,-1,0})>ch("green")){
+@Cd={0,1,0};
+}
+//blue
+else if (dot(@N,{0,0,-1 })>ch("blue")){
+@Cd={0,0,1};
+}
+//blue
+else {
+@Cd={0,0,1};
+}
+
+"""}) 
+        wrangleBlur= wrangleSnippet.createOutputNode("attribwrangle","blurCdNormal")
+        wrangleBlur.setColor(pink)
+        wrangleBlur.setParms({"snippet":"""
+// blur Cd 
+int handle = pcopen(0,"P",@P,chf("radius"),chi("numPoint"));
+vector newColor = pcfilter(handle,"Cd");
+@Cd= newColor;
+
+//tweakNormal
+if (@Cd.z>0.1){
+@N= cross(@N,{0,-1,0});
+}
+else if (@Cd.y>0.1){
+@N= cross(@N,{0,0,1});
+}
+else @N =cross(@N,{0,0,1})*-1;
+"""}) 
+
+    print("--- Don't forget to create the channel ---")
 
 
 """
