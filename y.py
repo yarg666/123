@@ -9,7 +9,7 @@
 # set up de shading avec shading ball et environment : y.shadingBall y.123
 
 
-print ("---- Bonjour Michael ! ----")
+print ("---- Bonjour Commisaire ! ----")
 
 print ("***for help type: help(y) ***")
 
