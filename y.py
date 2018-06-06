@@ -930,11 +930,32 @@ def wranglePreset():
 
 //dot
 //if (dot(@N,chv("vector"))>ch("select")){
-//@Cd.x=1;
+//@Cd.x=1;}
 
 //constraint
 //s@constraint_name= "ConRelGlue" ;
 //s@constraint_type= "all" ;
+
+//tangent
+//@N= @P-point(0,"P",@ptnum-1);
+//if (@ptnum==0)@N= point(0,"N",@ptnum-2);
+
+//noise
+vector freq = chv("frequence");vector offset = chv("offset");
+float amp = ch("amplitude");int turb = chi("turbulence");
+float rough = ch("rough");float atten = ch("attenuation");
+
+//onoise(@P*freq - offset, turb, rough, atten) * amp
+//snoise(@P*freq - offset, turb, rough, atten) * amp
+//@Cd*=anoise(@P*freq - offset, turb, rough, atten) * amp;
+
+//vop_correctperlinNoiseVF(@P*freq - offset, turb, rough, atten) * amp
+//vop_correctperlinNoiseVV(@P*freq - offset, turb, rough, atten) * amp
+//vop_simplexNoiseVF(@P*freq - offset, turb, rough, atten) * amp
+//vop_simplexNoiseVV(@P*freq - offset, turb, rough, atten) * amp
+//vop_perlinNoiseVF(@P*freq - offset, turb, rough, atten) * amp
+//vop_perlinNoiseVV(@P*freq - offset, turb, rough, atten) * amp 
+
 
 """})
 
