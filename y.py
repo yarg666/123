@@ -941,9 +941,9 @@ def wranglePreset():
 //if (@ptnum==0)@N= point(0,"N",@ptnum-2);
 
 //noise
-vector freq = chv("frequence");vector offset = chv("offset");
-float amp = ch("amplitude");int turb = chi("turbulence");
-float rough = ch("rough");float atten = ch("attenuation");
+//vector freq = chv("frequence");vector offset = chv("offset");
+//float amp = ch("amplitude");int turb = chi("turbulence");
+//float rough = ch("rough");float atten = ch("attenuation");
 
 //onoise(@P*freq - offset, turb, rough, atten) * amp
 //snoise(@P*freq - offset, turb, rough, atten) * amp
