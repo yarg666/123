@@ -895,6 +895,7 @@ float z = rand(@ptnum-801);
 
 
 
+
 def wranglePreset():
     '''
     a simple wrangle preset for lazy man
@@ -935,6 +936,11 @@ def wranglePreset():
 //constraint
 //s@constraint_name= "ConRelGlue" ;
 //s@constraint_type= "all" ;
+
+//forloop
+//int i;
+//for (i=0; i<chi("iteration"); i+=1) {
+//}
 
 //tangent
 //@N= @P-point(0,"P",@ptnum-1);
