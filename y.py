@@ -1059,48 +1059,25 @@ else @N =cross(@N,{0,0,1})*-1;
 
     print("--- Don't forget to create the channel ---")
 
+	
+def transformMatrix ():
 
-"""
-    help(vdb)
+    '''
+    bouge un objet vers l'origine du monde en fonction d'un point donne
+    
+    '''
+    
+    help(transformMatrix)
 
     import hou
     nodeSelect = hou.selectedNodes()
-    black=hou.Color((0,0,0))
     pink=hou.Color((0.98,0.275,0.275))
-    out= hou.node("/out")
 
     for node in nodeSelect:
-        parent = node.parent()  #hou.node("..")
-        parentString =parent.name()    
-        getName = node.name()
-        connectNode = node.outputs()
-        outNull = node.createOutputNode("null",getName.upper())
-        outNull.setPosition(node.position())
-        outNull.move([0, -.75])
-        outNull.setColor(black)
-
-        #set read node to read myWriteGeo
-        myFile = outNull.createOutputNode("file",getName.upper()+"_CACHE")
-        myFile.setColor(pink)
-        myFile.setParms({'file': '$HIP/cache/rop_sfx/vdb/$OS/v`padzero(3,chs("/out/$OS/version"))`/$OS.$F5.vdb'})
-        myWriteGeo= out.createNode("geometry",getName.upper()+"_CACHE")
-        myWriteGeo.setParms({"soppath":"/obj/"+parentString+"/"+getName.upper()})
-        myWriteGeo.setParms({"sopoutput":"$HIP/cache/rop_sfx/vdb/$OS/v`padzero(3, ch('version'))`/$OS.$F5.vdb"})
-        myWriteGeo.setParms({"trange":"normal"})
-
-        #add create param for versionning
-        parm_group = myWriteGeo.parmTemplateGroup()
-        parm_folder = hou.FolderParmTemplate("folder","version")
-        parm_folder.addParmTemplate(hou.IntParmTemplate("version","Version",1))
-        parm_group.append(parm_folder)
-        myWriteGeo.setParmTemplateGroup(parm_group)
-
-    """
-
-
-
-"""
-matrice wrangle one 
+        wrangleSnippet=node.createOutputNode("attribwrangle","transformToOrigin")
+        wrangleSnippet.setColor(pink)
+        wrangleSnippet.setParms({"snippet":"""
+ 
 
 vector basePtPos = point (0,"P",chi("basepoint")); 
 
@@ -1119,10 +1096,23 @@ m=invert(m);
 
 @P*= m;
 
-matrice wrangle two
+
 
 4@Um = point (1,"myMatrix",0);
 @P*= @Um ;
 
-"""
+"""}) 
+        wrangleBlur= wrangleSnippet.createOutputNode("attribwrangle","revertTransform")
+        wrangleBlur.setInput(1,wrangleSnippet)
+        wrangleBlur.setColor(pink)
+        wrangleBlur.setParms({"snippet":"""
+4@Um = point (1,"myMatrix",0);
+@P*= @Um ;
+"""}) 
 
+    print("--- Don't forget to create the channel ---")
+	
+	
+
+	
+	
