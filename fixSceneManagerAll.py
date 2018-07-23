@@ -5,7 +5,6 @@
 #def createInterface():
 #    return     fixSceneManager.fixSceneManagerClass()
 
-
 from PySide2 import QtWidgets
 import os
 import hou
