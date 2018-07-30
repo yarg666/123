@@ -9,7 +9,7 @@
 from PySide2 import QtWidgets
 import os
 import hou
-import applyScript
+
 print "Houdini c'est cool, Copperfield c'est mieu !"
 
 class fixSceneManagerClass(QtWidgets.QWidget): 
@@ -57,7 +57,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         self.refreshBouton=QtWidgets.QPushButton("filter and reload stg variable !")
         self.allProjectName=QtWidgets.QPushButton("print filter project name")
         self.versionUp=QtWidgets.QPushButton("versionUp")
-        self.openAndScript=QtWidgets.QPushButton("openSceneAndApplyScript")
+        self.openAndScript=QtWidgets.QPushButton("saveText")
         self.textScript=QtWidgets.QPlainTextEdit()
         self.textScript.setPlaceholderText('pasteScriptHere')
 
@@ -102,6 +102,8 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         hipFile=hipName.data()
         hou.hipFile.load(hipFile)
         self.variablesReload()
+        self.afficherLaNote()
+        self.openSceneAndApplyScript()
 
     def hipNameFromList(self,hipName):
         self.hipFileFromList=hipName.data()
@@ -109,12 +111,16 @@ class fixSceneManagerClass(QtWidgets.QWidget):
     def afficherLaNote(self):
         hipPath = hou.expandString('$HIP')
         applyScriptPath= hipPath + "/applyScript.py"
-        with open (applyScriptPath,'r') as f:
-            contenuDeLaNote = f.read()
-            #print contenuDeLaNote
-			
-        print contenuDeLaNote
-        self.textScript.setPlainText(contenuDeLaNote)
+		
+        if os.path.isfile(applyScriptPath):
+            with open (applyScriptPath,'r') as f:
+                contenuDeLaNote = f.read()
+                print contenuDeLaNote
+                self.textScript.setPlainText(contenuDeLaNote)
+        else:
+            self.textScript.setPlainText("shot")
+
+				#print contenuDeLaNote
 	
 	
     def openSceneAndApplyScript(self):
@@ -130,7 +136,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         print applyScriptPath
         writeMyScript = open(applyScriptPath, 'w')
         writeMyScript.write(myScriptToWrite)
-        reload (applyScript)
+        #reload (applyScript)
         #applyScript.temp()
 
         #print"openSceneAndApplyScript"
