@@ -112,7 +112,7 @@ class fixSceneManagerClass(QtWidgets.QWidget):
         writeMyScript = open(applyScriptPath, 'w')
         writeMyScript.write(myScriptToWrite)
         reload (applyScript)
-        applyScript.temp()
+        #applyScript.temp()
 
         #print"openSceneAndApplyScript"
 
