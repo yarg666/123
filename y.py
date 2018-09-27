@@ -923,11 +923,14 @@ def wranglePreset():
 //@pscale*= fit01(rand(@ptnum+654),0.8,1.2);
 
 //pcopen pcfilter
-//int handle = pcopen(0,"P",@P,chf("radius"),chi("numPoint"));
+//int handle = pcopen(1,"P",@P,chf("radius"),chi("numPoint"));
 //@Cd = pcfilter(handle,"Cd");
 
 //chramp color
 //@Cd= chramp("ramp",fit(@curvature,0,1000,0,1));
+
+// normalize curve ramp
+@Cd= chramp("Cd",float(@ptnum)/float(@numpt));
 
 //dot
 //if (dot(@N,chv("vector"))>ch("select")){
