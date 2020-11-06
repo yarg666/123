@@ -9,8 +9,6 @@ import yFonction
 reload(yFonction)
 from yFonction import *
 
-
-
 print "hello from yProjet"
 
 class yProjectManagerClass(QWidget): 
@@ -28,6 +26,9 @@ class yProjectManagerClass(QWidget):
 
 		self.racine.setCurrentText(quelPipe())	
 
+
+
+
 		self.roots=QLineEdit(self.proj)
 		self.projectName=QComboBox()
 
@@ -41,10 +42,7 @@ class yProjectManagerClass(QWidget):
 		self.filterKey=QLineEdit()
 		self.filterKey.setPlaceholderText('search')
 		self.refreshBouton=QPushButton("refresh")
-		self.openSetconB = QPushButton("openSetCon")
-		self.saveWipB = QPushButton("saveWip")
-		self.importA7B = QPushButton("importA7")
-		#home pipe
+
 		self.saveInc=QPushButton("SAVE")
 		self.saveInc.hide()
 		self.new=QPushButton("NEW")
@@ -65,9 +63,7 @@ class yProjectManagerClass(QWidget):
 		#self.mainLayout.addWidget(self.roots,1,0,1,4)
 		#self.mainLayout.addWidget(self.filterKey,2,0,1,3)
 		self.mainLayout.addWidget(self.projectName,0,1,1,1)
-		self.mainLayout.addWidget(self.openSetconB,2,0,1,1)
-		self.mainLayout.addWidget(self.saveWipB,2,1,1,1)
-		self.mainLayout.addWidget(self.importA7B,2,2,1,1)
+
 		self.mainLayout.addWidget(self.refreshBouton,2,3,1,1)
 		self.mainLayout.addWidget(self.table,3,0,1,4)
 		
@@ -85,17 +81,14 @@ class yProjectManagerClass(QWidget):
 		self.buttonConnect()
 		self.projectNameMenu()
  
-	def refresh(self):
-		print "refresh"
-		self.parseXml()
-		self.projectNameMenu()
+
+
 
 	def chooseInterface(self):
 		if self.racine.currentText() == "HOME":
 			self.HOME()
 		elif self.racine.currentText() == "CGEV":
 			self.cgev()	
-
 
 	def initRacine(self):
 		temp = yDictPipe[self.racine.currentText()]
@@ -403,22 +396,9 @@ class yProjectManagerClass(QWidget):
 			#incrementation des lignes
 			inc+=1
 
-	def openSetconF(self):
-		from cgev.pipeline.appconnector.connectorMenu import MenuHandler; MenuHandler.openShotWindow()
-
-	def saveWipF(self):
-		from cgev.pipeline.appconnector.connectorMenu import MenuHandler; MenuHandler.saveShotWindow(False)
-
-	def importA7F(self):
-		from cgev.pipeline.appconnector.connectorMenu import MenuHandler; MenuHandler.importAsset()
-
-
 	def buttonConnect(self):
 		self.racine.activated.connect(self.initRacine)
-		self.refreshBouton.clicked.connect(self.refresh)
-		self.openSetconB.clicked.connect(self.openSetconF)
-		self.saveWipB.clicked.connect(self.saveWipF)
-		self.importA7B.clicked.connect(self.importA7F)
+		self.refreshBouton.clicked.connect(self.chooseInterface)
 		#self.filterKey.returnPressed.connect(self.chooseInterface)
 		self.table.doubleClicked.connect(self.openScene)
 		self.projectName.activated.connect(self.menuShot)
